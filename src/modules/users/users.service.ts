@@ -36,15 +36,23 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.prisma.user.findFirst({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found.');
     }
     return plainToInstance(User, user);
   }
 
+  async findByEmail(email: string) {
+    const user = await this.prisma.user.findFirst({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    return user;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.user.findFirst({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found.');
     }
@@ -56,7 +64,7 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const user = await this.prisma.user.findFirst({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found.');
     }
